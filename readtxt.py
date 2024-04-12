@@ -7,7 +7,7 @@ def load_data_from_txt(FloatSkinfile):
             inputdata.extend(values)  # Добавление значений в список
     return inputdata
 # Загрузка данных из файла
-filename = "buff_bot\FloatSkin.txt"  # Укажите имя вашего файла
+filename = 'FloatSkin.txt'  # Укажите имя вашего файла
 inputdata = load_data_from_txt(filename)
 
 # Вывод загруженных данных для проверки
