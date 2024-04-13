@@ -5,6 +5,7 @@ import time
 import ClassBot 
 import re
 from readtxt import MaxFloatSkin
+from tkinter import *
 
 
 o = Options()
@@ -17,12 +18,12 @@ page_num = 1
 while True:
     for MFS in MaxFloatSkin:
         while True:
-            driver.get(f'https://buff.163.com/goods/{MFS.Skin}?from=market#tab=selling&min_paintwear=0.00&max_paintwear={MFS.Maxfloat}&page_num={page_num}')
+            driver.get(f'https://buff.163.com/goods/{MFS.Skin}?from=market#tab=selling&min_paintwear=0.00&max_paintwear={MFS.Maxfloat}&page_num={page_num}&max_price={MFS.Price}')
            
             time.sleep(10)   
 
             soup = BeautifulSoup(driver.page_source, 'html.parser')
-
+            IsBuy = False
             table = soup.find('table', attrs={'id':'market-selling-list'})
 
             data = ""
@@ -35,12 +36,21 @@ while True:
                     if row.find('strong', class_='f_Strong') is not None:
                         price_ = ''.join(re.findall(r'[\d\.-]',row.find('strong', class_='f_Strong').text))
                         
-                        if float(MFS.Price) >= float(price_):    
-                            Skin_.append(ClassBot.Skin(data, price_))     
-                       
                         
+                    Skin_.append(ClassBot.Skin(data, price_))     
+                    driver.find_element("link text", 'Купить').click()
+                           
+                    time.sleep(3)
+                    if driver.find_element("link text", 'Оплатить').click() == True:
+                        driver.find_element("link text", 'Оплатить').click()
+                        time.sleep(3)
+                        driver.find_element("link text", 'Отправить предложение в приложение').click()
+                              
+                    else: 
+                        continue
+                         
                 
-                if page_num < 5:
+                if page_num < 2:
                     page_num += 1
                 else: 
                     page_num = 1
